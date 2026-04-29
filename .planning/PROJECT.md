@@ -29,11 +29,16 @@
 
 ## Context
 
+**开发环境：**
+- 源码路径：`D:\Software\CCode\AW`
+- JDK：`D:\Software\CCode\zulu21.32.17-ca-jdk21.0.2-win_x64` (Zulu JDK 21)
+
 **技术环境：**
 - Minecraft 1.21.1，NeoForge 21.1.222 加载器
 - Armourer's Workshop：装备定制模组，使用 VBO 渲染管线
 - Veil (FoundryMC)：渲染框架，作为其他模组的前置依赖
-- Sable：Veil 使用的 shader 管线实现
+- Veil 使用自己的 "pinwheel" shader 格式和 DirectShaderCompiler 进行 shader 编译
+- 注意：Sable 是物理模组，不是 shader 管线（此前误解已修正）
 
 **AW VBO 渲染架构（核心冲突点）：**
 AW 的 VBO 方案采用"借用当前绑定的 shader 并注入 AW 专用 uniform（aw_ModelViewMatrix、aw_MatrixFlags、aw_TextureMatrix）"的方式。当 Veil/Iris 修改了当前 shader 管线状态和 program 后，AW 注入的 uniform 写入错误的 program 或携带错误的矩阵/纹理状态。
@@ -58,8 +63,8 @@ AW 的 VBO 方案采用"借用当前绑定的 shader 并注入 AW 专用 uniform
 | 9 | 强制 AW uniform 写入当前 GL_CURRENT_PROGRAM | 渲染 bug 未消失 |
 | 10 | 保留 VBO 仅替换触发 RenderType | 不修复核心异常 |
 
-**关键推论：**
-问题不只是 "在哪个时机注入" 或 "往哪个 program 写 uniform"，而可能是 Veil 的 shader 编译/绑定策略在更底层改变了 AW VBO 所依赖的渲染状态假设。
+**关键推论（调研确认）：**
+问题不只是 "在哪个时机注入"——调研确认根因是 **shader program 不匹配**。AW 在 `clearRenderState` hook 处读取 `GL_CURRENT_PROGRAM` 借用当前 shader，但 Veil 的 RenderTypeStageRegistry 替换了活跃的 shader program。AW 的 uniform 注入写入了错误的 program。推荐修复方案是给 AW 独立专用 shader program（Pattern 1），替换"借用"模式。
 
 ## Constraints
 
@@ -76,6 +81,7 @@ AW 的 VBO 方案采用"借用当前绑定的 shader 并注入 AW 专用 uniform
 |----------|-----------|---------|
 | 采用 Mixin 修补方案 | AW 和 Veil 均为已发布模组，Mixin 是最小侵入性的兼容修复手段 | — Pending |
 | 优先逆向 Veil 渲染管线而非直接在 AW 侧修补 | 10 种 AW 侧修补方向已全部失败，需先理解 Veil 到底改了什么状态 | — Pending |
+| 采用专用 AW Shader Program 方案（Pattern 1） | 调研确认根因为 shader program 不匹配；给 AW 独立 shader 替换 borrow 模式，从根本上消除冲突 | — Pending |
 
 ## Evolution
 
@@ -95,4 +101,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-30 after initialization*
+*Last updated: 2026-04-30 after research and roadmap creation*
