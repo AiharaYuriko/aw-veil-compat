@@ -1,25 +1,25 @@
 modLoader="javafml"
-loaderVersion="${loader_version_range}"
+loaderVersion="[1,)"
 license="MIT"
 
 [[mods]]
-modId="${mod_id}"
-version="${mod_version}"
-displayName="${mod_name}"
+modId="awveilcompat"
+version="1.0.0"
+displayName="AW-Veil Compat"
 description="Compatibility fix for Armourer's Workshop VBO rendering when Veil shader mod is loaded."
 authors="AW-Veil Compat Team"
 
-[[dependencies.${mod_id}]]
+[[dependencies.awveilcompat]]
 modId="neoforge"
 mandatory=true
-versionRange="${neo_version_range}"
+versionRange="[21.1,21.2)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.awveilcompat]]
 modId="minecraft"
 mandatory=true
-versionRange="${minecraft_version_range}"
+versionRange="[1.21,1.22)"
 ordering="NONE"
 side="BOTH"
 
