@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "awveilcompat.refmap.json",
   "client": [
-    "AbstractShaderObjectStateProbeMixin"
+    "ShaderUniformsProbeMixin"
   ],
   "injectors": {
     "defaultRequire": 0
