@@ -42,7 +42,7 @@ public abstract class RenderTypeStageProbeMixin {
     }
 
     @Inject(method = "register", at = @At("HEAD"), require = 0)
-    private void onRegister(CallbackInfo ci) {
+    private static void onRegister(CallbackInfo ci) {
         if (!ModDetector.isVeilLoaded()) return;
         if (!GlStateReader.isOnRenderThread()) return;
 
