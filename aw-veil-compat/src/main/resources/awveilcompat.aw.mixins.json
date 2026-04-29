@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.example.awveilcompat.mixin.aw",
+  "plugin": "com.example.awveilcompat.mixin.AwVeilCompatMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "awveilcompat.refmap.json",
+  "client": [],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

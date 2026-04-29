@@ -33,10 +33,6 @@ neoForge {
     }
 }
 
-dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.15.5:processor'
-}
-
 tasks.named('jar', Jar).configure {
     manifest {
         attributes(
