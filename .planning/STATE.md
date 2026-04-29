@@ -10,9 +10,9 @@
 | Dimension | Value |
 |-----------|-------|
 | Phase | 1 - Investigation & Foundation |
-| Plan | 01 completed |
-| Status | Plan 01 executed (scaffold + detection) |
-| Progress | [####                ] 20% |
+| Plan | 02 completed |
+| Status | Plan 02 executed (dual-side GL state probes) |
+| Progress | [######              ] 30% |
 
 ## Performance Metrics
 
@@ -32,6 +32,7 @@
 | 4 | Always use RenderSystem for GL state changes | Calling raw GL without going through RenderSystem/GlStateManager desyncs state cache from actual GPU state. glPushAttrib/glPopAttrib must never be used. | 2026-04-30 |
 | 5 | Use ModDevGradle 2.0.141 (latest) over unavavailable 2.0.80-beta | Version specified in research plan does not exist in the NeoForge Maven repository. Latest 2.0.141 is used instead. Also, `property()` renamed to `systemProperty()` in the new API. | 2026-04-30 |
 | 6 | Remove Mixin annotation processor dependency | ModDevGradle handles Mixin annotation processing automatically. The `org.spongepowered:mixin:0.15.5:processor` artifact is not published to the standard repos. | 2026-04-30 |
+| 7 | Use @Mixin(priority = N) instead of @Priority(N) annotation | @Priority requires import from Mixin internal package not reliably available; @Mixin(priority = N) achieves identical effect with the standard documented annotation parameter. | 2026-04-30 |
 
 ### Key TODOs
 
@@ -39,7 +40,7 @@
 - [x] Research-phase: decompile Veil to identify exact Mixin injection points in RenderTypeStageRegistry and DirectShaderCompiler
 - [x] Phase 1: create PHASE PLAN
 - [x] Phase 1: implement mod scaffold with runtime detection (DETECT-01, DETECT-02) and version lock (VERSION-01) — Plan 01
-- [ ] Phase 1: design and build GL state debug probes (GlStateTracker, GlStateDump, ProgramInspector) — Plan 02
+- [x] Phase 1: design and build GL state debug probes (GlStateReader, ProbeData, ProbeLogger, mixins) — Plan 02
 
 ### Blocker Status
 
@@ -52,4 +53,4 @@
 ## Session Continuity
 
 - 2026-04-30: Phase 1 executed Plan 01 — cloned AW/Veil source, built mod scaffold with runtime detection (3 mixin configs, MixinPlugin, ModDetector), NeoForge 21.1.222 version lock. Key deviation: ModDevGradle 2.0.141 (not 2.0.80-beta). Key finding: AW targets RenderStateShard at TAIL, not RenderType at HEAD.
-- Next: Execute Plan 02 (GL state debug probes)
+- 2026-04-30: Phase 1 executed Plan 02 — built dual-side GL state probes. AW-side probe at RenderStateShard.clearRenderState() HEAD (priority 100). Veil-side probes at ForgeRenderTypeStageHandler.register() and DirectShaderCompiler.compile(). TSV-formatted probe logs to probes/ directory. Python correlation script for offline timeline alignment. Key corrections: AW targets RenderStateShard (not RenderType), Veil uses ForgeRenderTypeStageHandler (not RenderTypeStageRegistry).
