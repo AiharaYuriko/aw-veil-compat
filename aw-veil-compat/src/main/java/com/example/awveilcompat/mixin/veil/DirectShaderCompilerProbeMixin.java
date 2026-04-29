@@ -37,7 +37,7 @@ public abstract class DirectShaderCompilerProbeMixin {
     }
 
     @Inject(method = "compile", at = @At("HEAD"), require = 0)
-    private void onCompile(CallbackInfoReturnable<foundry.veil.api.client.render.shader.CompiledShader> cir) {
+    private void onCompile(CallbackInfoReturnable<?> cir) {
         if (!ModDetector.isVeilLoaded()) return;
         if (!GlStateReader.isOnRenderThread()) return;
 
