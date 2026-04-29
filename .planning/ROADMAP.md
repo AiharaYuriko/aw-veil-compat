@@ -25,8 +25,12 @@
   4. Exact Veil injection points (RenderTypeStageRegistry, DirectShaderCompiler) are mapped
   5. Conflict matrix of Mixin targets already used by Iris/Veil/Sodium on the same classes is documented
   6. Mod JAR targets NeoForge 1.21.1 only (21.1.222) — version locked in mods.toml and build.gradle
-**Plans**: TBD
-**Research flag**: Phase 1 needs `/gsd-research-phase` to decompile AW and Veil source code for precise injection targets.
+**Plans**: 2 plans
+**Research flag**: Phase 1 needs `/gsd-research-phase` to decompile AW and Veil source code for precise injection targets. [COMPLETE — RESEARCH EXISTS]
+
+Plans:
+- [ ] 01-01-PLAN.md — Clone AW/Veil source repos, create mod scaffold with NeoForge 21.1.222 version lock, implement runtime detection (ModDetector + MixinPlugin + 3 mixin configs)
+- [ ] 01-02-PLAN.md — Implement dual-side GL state probes (AW-side at clearRenderState, Veil-side at RenderTypeStageRegistry/DirectShaderCompiler), create offline correlation script
 
 ### Phase 2: Core World Model Rendering Fix
 **Goal**: AW equipment models on entities render correctly with Veil loaded by replacing the "borrow current program" pattern with a dedicated AW shader program, while preserving VBO rendering performance.
@@ -70,7 +74,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1 - Investigation & Foundation | 0/0 | Not started | - |
+| 1 - Investigation & Foundation | 0/2 | Not started | - |
 | 2 - Core World Model Rendering Fix | 0/0 | Not started | - |
 | 3 - Item Rendering & Iris Coexistence | 0/0 | Not started | - |
 | 4 - Hardening & Diagnostics | 0/0 | Not started | - |
