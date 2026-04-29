@@ -1,0 +1,16 @@
+# External source repos (cloned for analysis, not part of this project)
+/AW/
+
+# JDK distribution
+/zulu21.32.17-ca-jdk21.0.2-win_x64/
+
+# Build outputs
+/aw-veil-compat/build/
+/aw-veil-compat/.gradle/
+/aw-veil-compat/run/
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
