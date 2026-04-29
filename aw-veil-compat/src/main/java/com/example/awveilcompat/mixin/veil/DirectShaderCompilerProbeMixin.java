@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Veil-side probe at DirectShaderCompiler.compile().
@@ -37,7 +37,7 @@ public abstract class DirectShaderCompilerProbeMixin {
     }
 
     @Inject(method = "compile", at = @At("HEAD"), require = 0)
-    private void onCompile(CallbackInfo ci) {
+    private void onCompile(CallbackInfoReturnable<foundry.veil.api.client.render.shader.CompiledShader> cir) {
         if (!ModDetector.isVeilLoaded()) return;
         if (!GlStateReader.isOnRenderThread()) return;
 
