@@ -11,7 +11,8 @@
 |-----------|-------|
 | Phase | 1 - Investigation & Foundation |
 | Plan | Not started |
-| Status | Not started |
+| Status | Context gathered |
+| Progress | [█                   ] 5% |
 | Progress | [                    ] 0% |
 
 ## Performance Metrics
@@ -44,8 +45,7 @@ None currently identified.
 
 ## Session Continuity
 
-- ROADMAP.md created with 4 phases covering all 10 v1 requirements
-- Coverage validated: 10/10 requirements mapped, 0 orphans
-- Key architectural decision: dedicated shader program (Pattern 1) is the chosen fix approach
-- Next action: execute research-phase for Phase 1 to identify exact AW/Veil injection targets via decompilation
-- Phase ordering rationale: investigation before fix (Phase 1 before Phase 2), world models before items (Phase 2 before Phase 3), hardening after everything works (Phase 4 last)
+- 2026-04-30: Phase 1 context gathered — 01-CONTEXT.md created with 6 implementation decisions
+- Source strategy: Clone SAGESSE-CN/AW + FoundryMC/Veil, fallback to JAR decompilation
+- Probe strategy: Dual-side GL state probes (AW clearRenderState + Veil RenderTypeStage) with nanosecond-timestamped log comparison
+- Next action: run `/gsd-plan-phase 1` to create execution plan for Phase 1
