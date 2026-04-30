@@ -6,7 +6,8 @@
   "refmap": "awveilcompat.refmap.json",
   "client": [
     "RenderTypeStageProbeMixin",
-    "DirectShaderCompilerProbeMixin"
+    "DirectShaderCompilerProbeMixin",
+    "VeilSetupMixin"
   ],
   "injectors": {
     "defaultRequire": 0

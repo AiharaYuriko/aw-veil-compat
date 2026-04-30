@@ -8,7 +8,7 @@
 ## Phases
 
 - [ ] **Phase 1: Investigation & Foundation** - Set up mod scaffold with runtime detection, investigate exact GL state difference at AW's render point with/without Veil, map injection targets
-- [ ] **Phase 2: Core World Model Rendering Fix** - Inject AW shader uniforms into Veil-compiled vertex shaders via ResourceProvider wrapping during ShaderManager.readShader(); fix entity model rendering with VBO performance preserved
+- [ ] **Phase 2: Core World Model Rendering Fix** - Give AW its own dedicated GL shader program with save/restore at ShaderUniforms.end(); fix entity model rendering with VBO performance preserved
 - [ ] **Phase 3: Item Rendering & Iris Coexistence** - Fix item rendering code path for inventory/hotbar and validate coexistence with Iris shader packs
 - [ ] **Phase 4: Hardening & Diagnostics** - Cross-platform testing, diagnostic tooling (overlay, logging, capture command), production cleanup, and release
 
@@ -33,19 +33,20 @@ Plans:
 - [x] 01-02-PLAN.md — Implement dual-side GL state probes (AW-side at clearRenderState, Veil-side at RenderTypeStageRegistry/DirectShaderCompiler), create offline correlation script
 
 ### Phase 2: Core World Model Rendering Fix
-**Goal**: AW equipment models on entities render correctly with Veil loaded. Fix approach (per Phase 1 research): inject AW's 7 uniforms into Veil-compiled vertex shaders at shader-source level via @WrapOperation on ResourceProvider.getResourceOrThrow() inside ShaderManager.readShader(), following AW's existing Iris compatibility pattern. This is compile-time only with zero per-frame overhead.
+**Goal**: AW equipment models on entities render correctly with Veil loaded. Fix approach (Pattern 1 — dedicated shader program, replacing failed ResourceProvider wrapping): save/restore GL program around ShaderUniforms.end() HEAD/TAIL with AW's own GLSL program that declares all 7 AW uniforms. AW always finds a program with valid uniform locations — works regardless of Veil, Iris, or any shader-modifying mod.
 **Depends on**: Phase 1 (must know exact injection targets and GL state behavior)
 **Requirements**: RENDER-01, PERF-01
 **Success Criteria** (what must be TRUE):
   1. AW equipment models on entities render correctly with Veil loaded — not stretched, not fixed near player, rotate properly with camera
   2. FPS with 5+ AW-equipped entities stays within 5% of the non-VBO fallback baseline (VBO rendering path preserved, no fallback to non-VBO)
-  3. AW uniform injection into Veil-compiled shaders does not corrupt subsequent vanilla/Veil rendering — no flicker, no missing chunks, no GL errors on subsequent draw calls
+  3. AW's dedicated shader program save/restore does not corrupt subsequent vanilla/Veil rendering — no flicker, no missing chunks, no GL errors on subsequent draw calls
   4. Mod survives resource pack reload (F3+T) without rendering artifacts
-  5. AW uniform locations (aw_ModelViewMatrix, aw_MatrixFlags, aw_TextureMatrix, etc.) are available in Veil-compiled programs, validated by runtime glGetUniformLocation() returning valid values
-**Plans**: 1 plan
+  5. AW uniform locations (aw_ModelViewMatrix, aw_MatrixFlags, aw_TextureMatrix, etc.) return valid locations (not -1) in AW's dedicated program, validated by runtime glGetUniformLocation()
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Create AwShaderUniformInjector (self-contained GLSL transformer), create VeilShaderResourceMixin (@WrapOperation on ResourceProvider.getResourceOrThrow()), register and build
+- [x] 02-01-PLAN.md — Create AwShaderUniformInjector (self-contained GLSL transformer), create VeilShaderResourceMixin (@WrapOperation on ResourceProvider.getResourceOrThrow()), register and build (SUPERSEDED — approach replaced by Pattern 1)
+- [ ] 02-02-PLAN.md — Create AwDedicatedProgram (dedicated GLSL shader program factory + matrix upload), create AwDedicatedShaderMixin (save/restore at ShaderUniforms.end()), clean up failed-approach files
 
 ### Phase 3: Item Rendering & Iris Coexistence
 **Goal**: AW item textures render correctly in inventory/hotbar with Veil loaded, and the fix works alongside Iris shader packs without conflict or duplication.
@@ -78,7 +79,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1 - Investigation & Foundation | 2/2 | Complete | 2026-04-30 |
-| 2 - Core World Model Rendering Fix | 1/1 | In progress | - |
+| 2 - Core World Model Rendering Fix | 1/2 | In progress (Plan 01 approach failed, replaced by Plan 02) | - |
 | 3 - Item Rendering & Iris Coexistence | 0/0 | Not started | - |
 | 4 - Hardening & Diagnostics | 0/0 | Not started | - |
 
