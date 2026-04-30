@@ -83,6 +83,10 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
         public static String process(String source) {
             if (source.contains("aw_ModelViewMatrix")) return source; // idempotent
 
+            // Only transform 3D entity/block shaders. GUI and text shaders
+            // use screen-space Position without ModelViewMat — skip them.
+            if (!source.contains("ModelViewMat")) return source;
+
             List<String> init1 = new ArrayList<>(); // flag=0: simple copy
             List<String> init2 = new ArrayList<>(); // flag=1: matrix transform
             String result = source;
@@ -146,11 +150,10 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
             result = result.replaceFirst("(void\\s+main\\s*\\(\\s*\\)\\s*\\{)(\\s*)",
                     Matcher.quoteReplacement(pre.toString()) + "\n$1$2aw_main_pre();$2$2");
 
-            // AW's aw_ModelViewMatrix is combined model-view. Remove vanilla
-            // ModelViewMat to prevent double view transform (causes frustum cull glitches).
-            result = result.replaceAll(
-                    "ModelViewMat\\s*\\*\\s*vec4\\s*\\(\\s*aw_Position\\s*,",
-                    "vec4(aw_Position,");
+            // AW's polygon offset for thin geometry — ensure it's applied.
+            // Veil may reset GL state between passes; this is a shader-side fallback.
+            result = result.replaceAll("(\\s*)(\\}\\s*$)",
+                    "$1  gl_Position.z -= 1e-5;\n$1$2");
 
             return result;
         }
