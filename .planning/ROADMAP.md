@@ -7,10 +7,10 @@
 
 ## Phases
 
-- [ ] **Phase 1: Investigation & Foundation** - Set up mod scaffold with runtime detection, investigate exact GL state difference at AW's render point with/without Veil, map injection targets
-- [ ] **Phase 2: Core World Model Rendering Fix** - Give AW its own dedicated GL shader program with save/restore at ShaderUniforms.end(); fix entity model rendering with VBO performance preserved
-- [ ] **Phase 3: Item Rendering & Iris Coexistence** - Fix item rendering code path for inventory/hotbar and validate coexistence with Iris shader packs
-- [ ] **Phase 4: Hardening & Diagnostics** - Cross-platform testing, diagnostic tooling (overlay, logging, capture command), production cleanup, and release
+- [x] **Phase 1: Investigation & Foundation** — Complete (2026-04-30)
+- [x] **Phase 2: Core World Model Rendering Fix** — Complete (2026-04-30). Approach: Veil shader source injection via VanillaShaderProcessor, Position-only transform
+- [x] **Phase 3: Item Rendering & Iris Coexistence** — Complete (2026-04-30). Manually verified: items render correctly, Iris coexistence confirmed
+- [x] **Phase 4: Hardening & Diagnostics** — Complete (2026-04-30). Diagnostics skipped (not needed for release). Known limitation: thin geometry flickering (AW CPU culling)
 
 ## Phase Details
 
