@@ -150,11 +150,6 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
             result = result.replaceFirst("(void\\s+main\\s*\\(\\s*\\)\\s*\\{)(\\s*)",
                     Matcher.quoteReplacement(pre.toString()) + "\n$1$2aw_main_pre();$2$2");
 
-            // AW's polygon offset for thin geometry — ensure it's applied.
-            // Veil may reset GL state between passes; this is a shader-side fallback.
-            result = result.replaceAll("(\\s*)(\\}\\s*$)",
-                    "$1  gl_Position.z -= 1e-5;\n$1$2");
-
             return result;
         }
 
