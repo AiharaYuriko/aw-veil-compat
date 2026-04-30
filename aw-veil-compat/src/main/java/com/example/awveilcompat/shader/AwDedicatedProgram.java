@@ -2,7 +2,6 @@ package com.example.awveilcompat.shader;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 import java.nio.FloatBuffer;
@@ -193,7 +192,7 @@ public final class AwDedicatedProgram {
     public static void uploadMatrices(int program) {
         Matrix4f projMat = RenderSystem.getProjectionMatrix();
         Matrix4f modelViewMat = RenderSystem.getModelViewMatrix();
-        Vector4f shaderColor = RenderSystem.getShaderColor();
+        float[] shaderColor = RenderSystem.getShaderColor();
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buf = stack.mallocFloat(16);
@@ -217,7 +216,7 @@ public final class AwDedicatedProgram {
             // Upload ColorModulator
             loc = GL20.glGetUniformLocation(program, "ColorModulator");
             if (loc >= 0) {
-                GL20.glUniform4f(loc, shaderColor.x(), shaderColor.y(), shaderColor.z(), shaderColor.w());
+                GL20.glUniform4f(loc, shaderColor[0], shaderColor[1], shaderColor[2], shaderColor[3]);
             }
         }
     }
