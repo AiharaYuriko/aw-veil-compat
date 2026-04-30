@@ -3,8 +3,10 @@
   "package": "com.example.awveilcompat.mixin.core",
   "compatibilityLevel": "JAVA_21",
   "refmap": "awveilcompat.refmap.json",
-  "client": [],
+  "client": [
+    "OldModDisablerMixin"
+  ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 0
   }
 }
