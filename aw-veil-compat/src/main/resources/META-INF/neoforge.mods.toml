@@ -4,10 +4,10 @@ license="MIT"
 
 [[mods]]
 modId="awveilcompat"
-version="1.0.0"
+version="1.0.1"
 displayName="AW-Veil Compat"
 description="Compatibility fix for Armourer's Workshop VBO rendering when Veil shader mod is loaded."
-authors="AW-Veil Compat Team"
+authors="DeepSeekV4pro & MisakaSteve"
 
 [[dependencies.awveilcompat]]
 modId="neoforge"
