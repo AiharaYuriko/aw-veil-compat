@@ -71,7 +71,7 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
      * 3. Declare the corresponding AW uniform matrix
      * 4. Generate aw_main_pre() that computes the AW value from the original
      */
-    static final class ShaderTransformer {
+    public static final class ShaderTransformer {
 
         // Order matters: Position must be first so its temp var exists for main() injection
         private static final AttributeSpec[] SPECS = {
@@ -83,7 +83,7 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
                 new AttributeSpec("Normal",      "vec3",  "aw_NormalMatrix",        "mat3", "($2 * $1)"),
         };
 
-        static String process(String source) {
+        public static String process(String source) {
             if (source.contains("aw_ModelViewMatrix")) return source; // idempotent
 
             List<String> init1 = new ArrayList<>(); // flag=0: simple copy
