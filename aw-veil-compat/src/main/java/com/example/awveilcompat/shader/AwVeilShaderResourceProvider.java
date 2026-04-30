@@ -73,14 +73,11 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
      */
     public static final class ShaderTransformer {
 
-        // Order matters: Position must be first so its temp var exists for main() injection
+        // Start with minimal transforms. Position is critical (model matrices).
+        // Color/texture/normal transforms are AW enhancements — add if needed
+        // after confirming basic rendering works.
         private static final AttributeSpec[] SPECS = {
                 new AttributeSpec("Position",    "vec3",  "aw_ModelViewMatrix",     "mat4", "vec3($2 * vec4($1, 1))"),
-                new AttributeSpec("Color",       "vec4",  "aw_ColorModulator",      "vec4", "($2 * $1)"),
-                new AttributeSpec("UV0",         "vec2",  "aw_TextureMatrix",       "mat4", "vec2($2 * vec4($1, 1, 1))"),
-                new AttributeSpec("UV1",         "ivec2", "aw_OverlayTextureMatrix", "mat4", "ivec2($2 * vec4($1, 1, 1))"),
-                new AttributeSpec("UV2",         "ivec2", "aw_LightmapTextureMatrix","mat4", "ivec2($2 * vec4($1, 1, 1))"),
-                new AttributeSpec("Normal",      "vec3",  "aw_NormalMatrix",        "mat3", "($2 * $1)"),
         };
 
         public static String process(String source) {
@@ -148,14 +145,6 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
             // Inject aw_main_pre() call at start of main()
             result = result.replaceFirst("(void\\s+main\\s*\\(\\s*\\)\\s*\\{)(\\s*)",
                     Matcher.quoteReplacement(pre.toString()) + "\n$1$2aw_main_pre();$2$2");
-
-            // Neutralize vanilla ColorModulator after aw_Color replaces it.
-            // aw_Color already includes aw_ColorModulator; the vanilla
-            // ColorModulator is set to (1,1,1,1) by AW in a normal pipeline
-            // but Veil may leave a different value active.
-            result = result.replaceAll(
-                    "aw_Color\\s*\\*\\s*ColorModulator",
-                    "aw_Color");
 
             return result;
         }
