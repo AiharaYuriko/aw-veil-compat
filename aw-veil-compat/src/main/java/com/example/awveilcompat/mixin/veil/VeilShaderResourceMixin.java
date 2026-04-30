@@ -5,15 +5,16 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import org.apache.commons.io.IOUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.injection.At;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -95,10 +96,11 @@ public class VeilShaderResourceMixin {
 
         // Return a new Resource wrapping the transformed source
         byte[] transformedBytes = transformedSource.getBytes(StandardCharsets.UTF_8);
+        ResourceMetadata meta = resource.metadata();
         return new Resource(
                 resource.source(),
                 () -> new ByteArrayInputStream(transformedBytes),
-                () -> new StringReader(transformedSource)
+                () -> meta
         );
     }
 }
