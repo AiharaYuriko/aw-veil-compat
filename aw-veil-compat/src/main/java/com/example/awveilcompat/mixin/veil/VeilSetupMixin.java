@@ -33,8 +33,7 @@ public class VeilSetupMixin {
             method = "setup",
             at = @At(
                     value = "NEW",
-                    target = "foundry/veil/impl/client/render/shader/processor/ShaderProcessorList;<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;)V",
-                    ordinal = 0, remap = false
+                    target = "foundry/veil/impl/client/render/shader/processor/ShaderProcessorList"
             )
     )
     private static Object aw2$wrapProcessorList(ResourceProvider provider, Operation<Object> original) {
