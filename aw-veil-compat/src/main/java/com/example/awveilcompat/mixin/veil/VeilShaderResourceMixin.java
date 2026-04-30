@@ -10,6 +10,8 @@ import net.minecraft.server.packs.resources.ResourceProvider;
 import org.apache.commons.io.IOUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.io.ByteArrayInputStream;
@@ -45,6 +47,12 @@ import java.nio.charset.StandardCharsets;
 @Mixin(targets = "foundry.veil.api.client.render.shader.ShaderManager")
 public class VeilShaderResourceMixin {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("awveilcompat");
+
+    static {
+        LOGGER.info("[AW-Veil Compat] VeilShaderResourceMixin class loaded");
+    }
+
     /**
      * Wraps the {@code ResourceProvider.getResourceOrThrow(ResourceLocation)}
      * call inside {@code ShaderManager.readShader()}.
@@ -70,6 +78,7 @@ public class VeilShaderResourceMixin {
     )
     private Resource aw2$wrapShaderSource(ResourceProvider provider, ResourceLocation location,
                                            Operation<Resource> original) throws IOException {
+        LOGGER.info("[AW-Veil Compat] @WrapOperation fired for: {}", location);
         // Fast path: only process vertex shaders
         if (!location.getPath().endsWith(".vsh")) {
             return original.call(provider, location);
