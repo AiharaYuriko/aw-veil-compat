@@ -146,9 +146,11 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
             result = result.replaceFirst("(void\\s+main\\s*\\(\\s*\\)\\s*\\{)(\\s*)",
                     Matcher.quoteReplacement(pre.toString()) + "\n$1$2aw_main_pre();$2$2");
 
-            // Inject depth bias at end of main() for thin AW geometry z-fighting fix
-            result = result.replaceAll("(\\s*)(\\}\\s*$)",
-                    "$1  gl_Position.z -= 1e-5;\n$1$2");
+            // AW's aw_ModelViewMatrix is combined model-view. Remove vanilla
+            // ModelViewMat to prevent double view transform (causes frustum cull glitches).
+            result = result.replaceAll(
+                    "ModelViewMat\\s*\\*\\s*vec4\\s*\\(\\s*aw_Position\\s*,",
+                    "vec4(aw_Position,");
 
             return result;
         }
