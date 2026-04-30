@@ -42,7 +42,7 @@ This approach:
 ## Build from Source
 
 ```bash
-git clone https://github.com/<repo>/aw-veil-compat.git
+git clone https://github.com/AiharaYuriko/aw-veil-compat.git
 cd aw-veil-compat
 set JAVA_HOME=<path-to-jdk21>
 ./gradlew build
