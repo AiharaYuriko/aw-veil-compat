@@ -67,9 +67,9 @@ public class AwDedicatedShaderMixin {
         // AW will now apply uniforms to our program which has all AW uniforms
         programId = awProgram;
 
-        // Also bind our shader so the actual GL draw uses it
-        // save() is called from prepare() before render()/drawElements()
+        // Bind our shader + upload matrices — save() is called from prepare()
         GL20.glUseProgram(awProgram);
+        AwDedicatedProgram.uploadMatrices(awProgram);
     }
 
     /**

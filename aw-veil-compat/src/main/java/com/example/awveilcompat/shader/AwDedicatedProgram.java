@@ -59,12 +59,12 @@ public final class AwDedicatedProgram {
             "in float vertexDistance;\n" +
             "\n" +
             "uniform sampler2D Sampler0;\n" +
+            "uniform sampler2D Sampler2;\n" +
             "\n" +
             "out vec4 fragColor;\n" +
             "\n" +
             "void main() {\n" +
             "    vec4 color = texture(Sampler0, texCoord0) * vertexColor;\n" +
-            "    if (color.a < 0.1) discard;\n" +
             "    fragColor = color;\n" +
             "}\n";
 
