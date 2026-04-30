@@ -3,9 +3,7 @@
   "package": "com.example.awveilcompat.mixin.core",
   "compatibilityLevel": "JAVA_21",
   "refmap": "awveilcompat.refmap.json",
-  "client": [
-    "RenderTypeProbeMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

@@ -4,10 +4,7 @@
   "plugin": "com.example.awveilcompat.mixin.AwVeilCompatMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "awveilcompat.refmap.json",
-  "client": [
-    "ShaderUniformsProbeMixin",
-    "ShaderRenderProbeMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 0
   }
