@@ -20,7 +20,6 @@ public final class AwDedicatedProgram {
             "in ivec2 UV2;\n" +
             "in vec3  Normal;\n" +
             "\n" +
-            "uniform mat4 ModelViewMat;\n" +
             "uniform mat4 ProjMat;\n" +
             "uniform vec4 ColorModulator;\n" +
             "\n" +
@@ -40,9 +39,8 @@ public final class AwDedicatedProgram {
             "\n" +
             "void main() {\n" +
             "    vec4 awPos = aw_ModelViewMatrix * vec4(Position, 1.0);\n" +
-            "    vec4 viewPos = ModelViewMat * awPos;\n" +
-            "    gl_Position = ProjMat * viewPos;\n" +
-            "    vertexDistance = length(viewPos.xyz);\n" +
+            "    gl_Position = ProjMat * awPos;\n" +
+            "    vertexDistance = length(awPos.xyz);\n" +
             "    vertexColor = Color * ColorModulator;\n" +
             "    texCoord0 = UV0;\n" +
             "    texCoord1 = UV1;\n" +
@@ -116,7 +114,6 @@ public final class AwDedicatedProgram {
 
     public static void uploadMatrices(int program) {
         Matrix4f projMat = RenderSystem.getProjectionMatrix();
-        Matrix4f modelViewMat = RenderSystem.getModelViewMatrix();
         float[] shaderColor = RenderSystem.getShaderColor();
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -125,11 +122,6 @@ public final class AwDedicatedProgram {
             projMat.get(0, buf);
             buf.flip();
             int loc = GL20.glGetUniformLocation(program, "ProjMat");
-            if (loc >= 0) GL20.glUniformMatrix4fv(loc, false, buf);
-
-            modelViewMat.get(0, buf);
-            buf.flip();
-            loc = GL20.glGetUniformLocation(program, "ModelViewMat");
             if (loc >= 0) GL20.glUniformMatrix4fv(loc, false, buf);
 
             loc = GL20.glGetUniformLocation(program, "ColorModulator");
