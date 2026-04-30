@@ -88,7 +88,6 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
 
             List<String> init1 = new ArrayList<>(); // flag=0: simple copy
             List<String> init2 = new ArrayList<>(); // flag=1: matrix transform
-            List<String> uniforms = new ArrayList<>();
             String result = source;
 
             for (AttributeSpec spec : SPECS) {
@@ -103,21 +102,24 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
                 if (step1.equals(result)) continue; // attribute not in this shader
                 result = step1;
 
-                // Step 2: Replace uses of vanilla name → awName (in body, after declarations)
-                // Only replace whole-word occurrences (not part of other identifiers)
-                Pattern usePattern = Pattern.compile("\\b" + Pattern.quote(spec.vanillaName) + "\\b");
-                // Skip the declaration line we already processed
-                result = usePattern.matcher(result).replaceAll(awName);
+                // Step 2: Replace uses of vanilla name → awName (everywhere except declaration)
+                result = result.replaceAll("\\b" + Pattern.quote(spec.vanillaName) + "\\b", awName);
 
-                // Add uniform declaration
-                uniforms.add("uniform " + spec.matrixType + " " + spec.matrixName + ";");
+                // Step 3: Restore original attribute declaration + add AW var + uniform
+                // "in vec3 __aw_Position_aw__;" → "uniform mat4 aw_ModelViewMatrix;\nvec3 aw_Position;\nin vec3 Position;"
+                String restoreTempDecl = "(in\\s+" + Pattern.quote(spec.type) + "\\s+)" +
+                        tempName + "(\\s*;)";
+                String restored = "uniform " + spec.matrixType + " " + spec.matrixName + ";\n" +
+                        spec.type + " " + awName + ";\n" +
+                        "$1" + spec.vanillaName + "$2";
+                result = result.replaceFirst(restoreTempDecl, restored);
 
-                // Add initializer lines
+                // Add initializer lines — use original vanilla name (restored above)
                 String expr = spec.expression
                         .replace("$1", spec.vanillaName)
                         .replace("$2", spec.matrixName);
-                init1.add(awName + " = " + spec.vanillaName);
-                init2.add(awName + " = " + expr);
+                init1.add(awName + " = " + spec.vanillaName + ";");
+                init2.add(awName + " = " + expr + ";");
             }
 
             if (init1.isEmpty()) return source; // no attributes found — shader not relevant
@@ -129,14 +131,11 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
             pre.append("#else\n");
             pre.append("uniform int aw_MatrixFlags = 0;\n");
             pre.append("#endif\n\n");
-            for (String u : uniforms) {
-                pre.append(u).append("\n");
-            }
-            pre.append("\nvoid aw_main_pre() {\n");
+            pre.append("void aw_main_pre() {\n");
             pre.append("  if ((aw_MatrixFlags & 0x01) != 0) {\n");
-            for (String line : init2) pre.append("    ").append(line).append(";\n");
+            for (String line : init2) pre.append("    ").append(line).append("\n");
             pre.append("  } else {\n");
-            for (String line : init1) pre.append("    ").append(line).append(";\n");
+            for (String line : init1) pre.append("    ").append(line).append("\n");
             pre.append("  }\n");
             // Normal non-uniform scale normalization
             if (init2.stream().anyMatch(s -> s.contains("aw_Normal"))) {
