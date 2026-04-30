@@ -6,7 +6,8 @@
   "refmap": "awveilcompat.refmap.json",
   "client": [
     "ShaderUniformsProbeMixin",
-    "ShaderRenderProbeMixin"
+    "ShaderRenderProbeMixin",
+    "AwDedicatedShaderMixin"
   ],
   "injectors": {
     "defaultRequire": 0
