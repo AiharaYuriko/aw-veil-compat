@@ -74,11 +74,8 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
     public static final class ShaderTransformer {
 
         // Start with minimal transforms. Position is critical (model matrices).
-        // Thin AW geometry has near-zero z extent after matrix transform,
-        // causing near-plane clipping at certain camera angles.
-        // The +0.001 z bias pushes thin geometry just inside the clip volume.
         private static final AttributeSpec[] SPECS = {
-                new AttributeSpec("Position",    "vec3",  "aw_ModelViewMatrix",     "mat4", "vec3($2 * vec4($1, 1)) + vec3(0, 0, 0.001)"),
+                new AttributeSpec("Position",    "vec3",  "aw_ModelViewMatrix",     "mat4", "vec3($2 * vec4($1, 1))"),
         };
 
         public static String process(String source) {
