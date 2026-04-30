@@ -2,15 +2,21 @@ package com.example.awveilcompat;
 
 import com.example.awveilcompat.detection.ModDetector;
 import net.neoforged.fml.common.Mod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mod("awveilcompat")
 public class AwVeilCompat {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("awveilcompat");
+
     public AwVeilCompat() {
-        // Cache mod presence at construction time (ModList.get() is available here)
         ModDetector.init();
 
-        // Phase 1: investigation only — no fix code
-        // Phase 2+ will register mixin configs and event handlers here
+        if (ModDetector.isOldCompatLoaded()) {
+            LOGGER.warn("[AW-Veil Compat] Detected old aw_veil_compat mod (VBO-disabling approach). "
+                    + "This mod is already handling AW-Veil compatibility. "
+                    + "awveilcompat mixins will be disabled to avoid conflicts.");
+        }
     }
 }

@@ -12,26 +12,32 @@ public class AwVeilCompatMixinPlugin implements IMixinConfigPlugin {
 
     private Boolean awLoaded;
     private Boolean veilLoaded;
+    private Boolean oldCompatLoaded;
 
     @Override
     public void onLoad(String mixinPackage) {
-        // IMPORTANT: Use LoadingModList, NOT ModList.get()
-        // ModList.get() returns null during Mixin plugin initialization (PITFALL-01)
         this.awLoaded = FMLLoader.getLoadingModList()
                 .getModFileById(ModDetector.AW_MOD_ID) != null;
         this.veilLoaded = FMLLoader.getLoadingModList()
                 .getModFileById(ModDetector.VEIL_MOD_ID) != null;
+        this.oldCompatLoaded = FMLLoader.getLoadingModList()
+                .getModFileById(ModDetector.OLD_COMPAT_MOD_ID) != null;
     }
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        // If the old VBO-disabling compat mod is present, disable ourselves
+        // entirely to avoid mixin conflicts and redundant fixes.
+        if (oldCompatLoaded) {
+            return false;
+        }
         if (mixinClassName.contains(".mixin.aw.")) {
             return awLoaded;
         }
         if (mixinClassName.contains(".mixin.veil.")) {
             return veilLoaded;
         }
-        return true; // core mixins always apply
+        return true;
     }
 
     // ---- Required stubs ----
