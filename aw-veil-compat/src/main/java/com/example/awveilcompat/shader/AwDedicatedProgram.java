@@ -13,12 +13,12 @@ public final class AwDedicatedProgram {
     public static final String VERTEX_SOURCE =
             "#version 150 core\n" +
             "\n" +
-            "layout(location = 0) in vec3  Position;\n" +
-            "layout(location = 1) in vec4  Color;\n" +
-            "layout(location = 2) in vec2  UV0;\n" +
-            "layout(location = 3) in ivec2 UV1;\n" +
-            "layout(location = 4) in ivec2 UV2;\n" +
-            "layout(location = 5) in vec3  Normal;\n" +
+            "in vec3  Position;\n" +
+            "in vec4  Color;\n" +
+            "in vec2  UV0;\n" +
+            "in ivec2 UV1;\n" +
+            "in ivec2 UV2;\n" +
+            "in vec3  Normal;\n" +
             "\n" +
             "uniform mat4 ModelViewMat;\n" +
             "uniform mat4 ProjMat;\n" +
@@ -87,6 +87,15 @@ public final class AwDedicatedProgram {
         int program = GL20.glCreateProgram();
         GL20.glAttachShader(program, vertexShader);
         GL20.glAttachShader(program, fragmentShader);
+
+        // Bind attribute locations (avoids needing layout(location) in GLSL)
+        GL20.glBindAttribLocation(program, 0, "Position");
+        GL20.glBindAttribLocation(program, 1, "Color");
+        GL20.glBindAttribLocation(program, 2, "UV0");
+        GL20.glBindAttribLocation(program, 3, "UV1");
+        GL20.glBindAttribLocation(program, 4, "UV2");
+        GL20.glBindAttribLocation(program, 5, "Normal");
+
         GL20.glLinkProgram(program);
 
         if (GL20.glGetProgrami(program, GL20.GL_LINK_STATUS) == GL20.GL_FALSE) {
