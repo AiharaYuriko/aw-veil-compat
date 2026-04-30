@@ -149,6 +149,14 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
             result = result.replaceFirst("(void\\s+main\\s*\\(\\s*\\)\\s*\\{)(\\s*)",
                     Matcher.quoteReplacement(pre.toString()) + "\n$1$2aw_main_pre();$2$2");
 
+            // Neutralize vanilla ColorModulator after aw_Color replaces it.
+            // aw_Color already includes aw_ColorModulator; the vanilla
+            // ColorModulator is set to (1,1,1,1) by AW in a normal pipeline
+            // but Veil may leave a different value active.
+            result = result.replaceAll(
+                    "aw_Color\\s*\\*\\s*ColorModulator",
+                    "aw_Color");
+
             return result;
         }
 
