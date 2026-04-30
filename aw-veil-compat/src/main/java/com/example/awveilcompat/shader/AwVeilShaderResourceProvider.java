@@ -83,10 +83,6 @@ public class AwVeilShaderResourceProvider implements ResourceProvider {
         public static String process(String source) {
             if (source.contains("aw_ModelViewMatrix")) return source; // idempotent
 
-            // Only transform 3D entity/block shaders. GUI and text shaders
-            // use screen-space Position without ModelViewMat — skip them.
-            if (!source.contains("ModelViewMat")) return source;
-
             List<String> init1 = new ArrayList<>(); // flag=0: simple copy
             List<String> init2 = new ArrayList<>(); // flag=1: matrix transform
             String result = source;
