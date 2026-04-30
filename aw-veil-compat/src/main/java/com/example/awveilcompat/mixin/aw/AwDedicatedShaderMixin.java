@@ -3,6 +3,7 @@ package com.example.awveilcompat.mixin.aw;
 import com.example.awveilcompat.detection.ModDetector;
 import com.example.awveilcompat.shader.AwDedicatedProgram;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.lwjgl.opengl.GL20;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -65,5 +66,23 @@ public class AwDedicatedShaderMixin {
         // Overwrite captured programId with our dedicated shader
         // AW will now apply uniforms to our program which has all AW uniforms
         programId = awProgram;
+
+        // Also bind our shader so the actual GL draw uses it
+        // save() is called from prepare() before render()/drawElements()
+        GL20.glUseProgram(awProgram);
+    }
+
+    /**
+     * Ensure our shader is bound before the draw call.
+     * load() restores VAO/VBO/IBO but NOT the program — we add program binding.
+     */
+    @Inject(method = "load", at = @At("TAIL"), require = 0)
+    private void onLoad(CallbackInfo ci) {
+        if (!ModDetector.isAWLoaded()) return;
+        if (awProgram <= 0) return;
+
+        // Re-bind our shader — load() restored VAO/VBO/IBO, we ensure correct program
+        GL20.glUseProgram(awProgram);
+        AwDedicatedProgram.uploadMatrices(awProgram);
     }
 }
